@@ -1,0 +1,168 @@
+<!doctype html>
+<html>
+<head>
+  <title>SAP HANA Data Flow Visualization</title>
+
+  <script type="text/javascript" src="dist/vis.js"></script>
+  
+  <script src="/sap/ui5/1/resources/sap-ui-core.js"
+                           id="sap-ui-bootstrap"
+                           data-sap-ui-libs="sap.m, sap.ui.commons, sap.ui.ux3, sap.ui.table,sap.viz,sap.ui.unified,sap.ui.comp, sap.suite.ui.commons, sap.ui.layout,sap.makit"
+                           data-sap-ui-theme="sap_bluecrystal"
+                           data-sap-ui-xx-bindingSyntax="complex">
+ </script>
+  
+ <link href="dist/vis.css" rel="stylesheet" type="text/css" />
+
+  <style type="text/css">
+    #mynetwork {
+      float:left;
+      width: 70vw;
+      height: 99vh;
+      border: 1px solid lightgray;
+    }
+    #config {
+      float:left;
+      width: 27vw;
+      height: 99vh;
+    }
+  </style>
+</head>
+<body>
+
+<div id="mynetwork"></div>
+<div id="config"></div>
+
+<script type="text/javascript">
+
+ function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+ }
+ 
+ var path = getParameterByName('path');
+ var host = window.location.host;
+ var HANAImageDir = 'http://'+host+'/DFV/VIS/HANAimage/';
+ 
+ var objectList = new vis.DataSet(options);
+ 
+ var objectListService = 'http://'+host+'/DFV/SERVICE/objectList.xsjs?path='+path;		  
+ var oModelObjectList = new sap.ui.model.json.JSONModel();
+ 
+ oModelObjectList.loadData(objectListService, {}, false, "GET"); 
+ 
+ var dependList = new vis.DataSet(options);
+ 
+ var dependListService = 'http://'+host+'/DFV/SERVICE/objectDependencies.xsjs?path='+path;		  
+ var oModelDependList = new sap.ui.model.json.JSONModel();
+ 
+ oModelDependList.loadData(dependListService, {}, false, "GET"); 
+ 
+ var objectCnt = oModelObjectList.oData.length;
+ 
+ for (var i = 0; i < objectCnt; i++){
+	 
+	 var splitObjectName = oModelObjectList.oData[i].OBJECT_NAME.split("/");
+	 var ObjectName = splitObjectName[splitObjectName.length - 1];
+	 
+	 if (oModelObjectList.oData[i].ACTIVATED_BY != null){
+		 ObjectName = ObjectName + " (" +oModelObjectList.oData[i].ACTIVATED_BY + ")";
+	 }
+	 
+	 var imagePath;
+	 
+	 if (oModelObjectList.oData[i].OBJECT_TYPE == "TABLE") {
+		 imagePath = HANAImageDir + "Table.png";
+	 }
+	 
+	 if (oModelObjectList.oData[i].OBJECT_TYPE == "PROCEDURE") {
+		 imagePath = HANAImageDir + "Procedure.png";
+	 }
+	 
+	 if (oModelObjectList.oData[i].OBJECT_TYPE == "VIEW") {
+		 if (oModelObjectList.oData[i].VIEW_TYPE == "CALC"){
+		 	imagePath = HANAImageDir + "Calculation.png";
+		 }
+		 if (oModelObjectList.oData[i].VIEW_TYPE == "OLAP"){
+		 	imagePath = HANAImageDir + "Analytic.png";
+		 }
+		 if (oModelObjectList.oData[i].VIEW_TYPE == "JOIN"){
+			 imagePath = HANAImageDir + "Attribute.png";
+		 }
+		 if (oModelObjectList.oData[i].VIEW_TYPE == "ROW"){
+			 imagePath = HANAImageDir + "Table.png";
+		 }
+	 }
+	 
+	 objectList.add({id:oModelObjectList.oData[i].SCHEMA_NAME + "." + oModelObjectList.oData[i].OBJECT_TYPE + "." + String(oModelObjectList.oData[i].VIEW_TYPE) + "." + oModelObjectList.oData[i].OBJECT_NAME, 
+		             label: ObjectName,
+		             title: oModelObjectList.oData[i].SCHEMA_NAME + "." + oModelObjectList.oData[i].OBJECT_NAME,
+		             image: imagePath,
+		             shape: 'image'});
+ }
+ 
+ var dependCnt = oModelDependList.oData.length;
+ 
+ for (var i = 0; i < dependCnt; i++){
+	 dependList.add({from:oModelDependList.oData[i].DEPENDENT_SCHEMA_NAME + "." + oModelDependList.oData[i].DEPENDENT_OBJECT_TYPE + "." + String(oModelDependList.oData[i].DEPENDENT_VIEW_TYPE) + "." + oModelDependList.oData[i].DEPENDENT_OBJECT_NAME, 
+		 			 to: oModelDependList.oData[i].BASE_SCHEMA_NAME + "." + oModelDependList.oData[i].BASE_OBJECT_TYPE + "." + String(oModelDependList.oData[i].BASE_VIEW_TYPE) + "." + oModelDependList.oData[i].BASE_OBJECT_NAME,
+		 			 arrows:'from',
+		 			 color:{color:'rgb(77,208,225)', highlight:'rgb(255,138,101)'}
+	 });
+ }
+
+  var container = document.getElementById('mynetwork');
+  
+  var data = {
+    nodes: objectList,
+    edges: dependList
+  };
+  
+  var options = {
+		  "edges": {
+		    "smooth": {
+		      "forceDirection": "none"
+		    }
+		  },
+		  "physics": {
+		    "barnesHut": {
+		      "gravitationalConstant": -7000,
+		      "centralGravity": 0.3,
+		      "avoidOverlap": 1
+		    },
+		    "minVelocity": 0.01,
+		    "maxVelocity": 5
+		  }
+		};
+  
+  var network = new vis.Network(container, data, options);
+  network.stabilize();
+  
+  network.on("selectNode", function (params) {
+	  var confElem = document.getElementById('config');
+	  var selNodeId = network.getSelectedNodes()[0];
+	  var conEdgesId =  network.getConnectedEdges(selNodeId);
+	  var fromNodesStr = "";
+	  var toNodesStr = "";
+	  var conEdges = dependList.get(conEdgesId);
+	  
+	  for (var i = 0; i < conEdges.length; i++){
+		 if (conEdges[i].to == selNodeId) {
+			 toNodesStr = toNodesStr + "<br>" + conEdges[i].from;
+		 } else {
+			 fromNodesStr = fromNodesStr + "<br>" + conEdges[i].to;
+		 }
+	  }
+	  
+	  document.getElementById('config').innerHTML = '<p>Selected node:<br>' + selNodeId + '<br>From nodes:' + fromNodesStr + '<br>To nodes:' + toNodesStr +'</p>';
+
+  });
+  
+</script>
+</body>
+</html>

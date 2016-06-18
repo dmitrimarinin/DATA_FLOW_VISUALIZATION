@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" xmlns:Variable="http://www.sap.com/ndb/BiModelVariable.ecore" schemaVersion="2.3" id="CV_OBJECT_LIST" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Aggregation">
+  <descriptions defaultDescription="CV_OBJECT_LIST"/>
+  <localVariables>
+    <variable id="IP_PATH" parameter="true">
+      <descriptions defaultDescription="IP_PATH"/>
+      <variableProperties datatype="NVARCHAR" defaultValue="DFV" length="256" mandatory="true">
+        <valueDomain type="empty"/>
+        <selection multiLine="false" type="SingleValue"/>
+      </variableProperties>
+    </variable>
+  </localVariables>
+  <variableMappings>
+    <mapping xsi:type="Variable:VariableMapping" dataSource="#CV_OBJECT_DEPENDENCIES">
+      <targetVariable name="IP_PATH" resourceUri="/DFV.MODEL/calculationviews/CV_OBJECT_DEPENDENCIES"/>
+      <localVariable>#IP_PATH</localVariable>
+    </mapping>
+    <mapping xsi:type="Variable:VariableMapping" dataSource="#CV_OBJECT_AUTHOR">
+      <targetVariable name="IP_PATH" resourceUri="/DFV.MODEL/calculationviews/CV_OBJECT_AUTHOR"/>
+      <localVariable>#IP_PATH</localVariable>
+    </mapping>
+  </variableMappings>
+  <informationModelLayout relativeWidthScenario="46"/>
+  <dataSources>
+    <DataSource id="CV_OBJECT_DEPENDENCIES" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/DFV.MODEL/calculationviews/CV_OBJECT_DEPENDENCIES</resourceUri>
+    </DataSource>
+    <DataSource id="CV_OBJECT_AUTHOR" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/DFV.MODEL/calculationviews/CV_OBJECT_AUTHOR</resourceUri>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Prj_All">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="BASE_SCHEMA_NAME"/>
+        <viewAttribute id="BASE_OBJECT_NAME"/>
+        <viewAttribute id="BASE_OBJECT_TYPE"/>
+        <viewAttribute id="BASE_VIEW_TYPE"/>
+        <viewAttribute id="DEPENDENT_SCHEMA_NAME"/>
+        <viewAttribute id="DEPENDENT_OBJECT_NAME"/>
+        <viewAttribute id="DEPENDENT_OBJECT_TYPE"/>
+        <viewAttribute id="DEPENDENT_VIEW_TYPE"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#CV_OBJECT_DEPENDENCIES">
+        <mapping xsi:type="Calculation:AttributeMapping" target="BASE_SCHEMA_NAME" source="BASE_SCHEMA_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BASE_OBJECT_NAME" source="BASE_OBJECT_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BASE_OBJECT_TYPE" source="BASE_OBJECT_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BASE_VIEW_TYPE" source="BASE_VIEW_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DEPENDENT_SCHEMA_NAME" source="DEPENDENT_SCHEMA_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DEPENDENT_OBJECT_NAME" source="DEPENDENT_OBJECT_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DEPENDENT_OBJECT_TYPE" source="DEPENDENT_OBJECT_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DEPENDENT_VIEW_TYPE" source="DEPENDENT_VIEW_TYPE"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Prj_Base">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="SCHEMA_NAME"/>
+        <viewAttribute id="OBJECT_NAME"/>
+        <viewAttribute id="OBJECT_TYPE"/>
+        <viewAttribute id="VIEW_TYPE"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Prj_All">
+        <mapping xsi:type="Calculation:AttributeMapping" target="SCHEMA_NAME" source="BASE_SCHEMA_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECT_NAME" source="BASE_OBJECT_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECT_TYPE" source="BASE_OBJECT_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VIEW_TYPE" source="BASE_VIEW_TYPE"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:AggregationView" id="Agr_Base">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="SCHEMA_NAME"/>
+        <viewAttribute id="OBJECT_NAME"/>
+        <viewAttribute id="OBJECT_TYPE"/>
+        <viewAttribute id="VIEW_TYPE"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Prj_Base">
+        <mapping xsi:type="Calculation:AttributeMapping" target="SCHEMA_NAME" source="SCHEMA_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECT_NAME" source="OBJECT_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECT_TYPE" source="OBJECT_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VIEW_TYPE" source="VIEW_TYPE"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Prj_Dep">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="SCHEMA_NAME"/>
+        <viewAttribute id="OBJECT_NAME"/>
+        <viewAttribute id="OBJECT_TYPE"/>
+        <viewAttribute id="VIEW_TYPE"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Prj_All">
+        <mapping xsi:type="Calculation:AttributeMapping" target="SCHEMA_NAME" source="DEPENDENT_SCHEMA_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECT_NAME" source="DEPENDENT_OBJECT_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECT_TYPE" source="DEPENDENT_OBJECT_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VIEW_TYPE" source="DEPENDENT_VIEW_TYPE"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:AggregationView" id="Agr_Dep">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="SCHEMA_NAME"/>
+        <viewAttribute id="OBJECT_NAME"/>
+        <viewAttribute id="OBJECT_TYPE"/>
+        <viewAttribute id="VIEW_TYPE"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Prj_Dep">
+        <mapping xsi:type="Calculation:AttributeMapping" target="SCHEMA_NAME" source="SCHEMA_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECT_NAME" source="OBJECT_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECT_TYPE" source="OBJECT_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VIEW_TYPE" source="VIEW_TYPE"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:UnionView" id="Union_All">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="SCHEMA_NAME"/>
+        <viewAttribute id="OBJECT_NAME"/>
+        <viewAttribute id="OBJECT_TYPE"/>
+        <viewAttribute id="VIEW_TYPE"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input emptyUnionBehavior="NO_ROW" node="#Agr_Base">
+        <mapping xsi:type="Calculation:AttributeMapping" target="SCHEMA_NAME" source="SCHEMA_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECT_NAME" source="OBJECT_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECT_TYPE" source="OBJECT_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VIEW_TYPE" source="VIEW_TYPE"/>
+      </input>
+      <input emptyUnionBehavior="NO_ROW" node="#Agr_Dep">
+        <mapping xsi:type="Calculation:AttributeMapping" target="SCHEMA_NAME" source="SCHEMA_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECT_NAME" source="OBJECT_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECT_TYPE" source="OBJECT_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VIEW_TYPE" source="VIEW_TYPE"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Prj_Au">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PACKAGE_ID"/>
+        <viewAttribute id="OBJECT_NAME_NO_PACK"/>
+        <viewAttribute id="OBJECT_SUFFIX"/>
+        <viewAttribute id="ACTIVATED_BY"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="SCHEMA_NAME" length="256" expressionLanguage="COLUMN_ENGINE">
+          <formula>'_SYS_BIC'</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="OBJECT_NAME" length="256" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;PACKAGE_ID&quot; + '/' + &quot;OBJECT_NAME_NO_PACK&quot;</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="VARCHAR" id="OBJECT_TYPE" length="32" expressionLanguage="COLUMN_ENGINE">
+          <formula>'VIEW'</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="VARCHAR" id="VIEW_TYPE" length="16" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;OBJECT_SUFFIX&quot; = 'calculationview','CALC', if(&quot;OBJECT_SUFFIX&quot; = 'analyticview','OLAP',if(&quot;OBJECT_SUFFIX&quot; = 'attributeview','JOIN','')))</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#CV_OBJECT_AUTHOR">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PACKAGE_ID" source="PACKAGE_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECT_NAME_NO_PACK" source="OBJECT_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECT_SUFFIX" source="OBJECT_SUFFIX"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ACTIVATED_BY" source="ACTIVATED_BY"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:AggregationView" id="Agr_Obj">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="SCHEMA_NAME"/>
+        <viewAttribute id="OBJECT_NAME"/>
+        <viewAttribute id="OBJECT_TYPE"/>
+        <viewAttribute id="VIEW_TYPE"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Union_All">
+        <mapping xsi:type="Calculation:AttributeMapping" target="SCHEMA_NAME" source="SCHEMA_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECT_NAME" source="OBJECT_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECT_TYPE" source="OBJECT_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VIEW_TYPE" source="VIEW_TYPE"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Jn_Au" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="SCHEMA_NAME"/>
+        <viewAttribute id="OBJECT_NAME"/>
+        <viewAttribute id="OBJECT_TYPE"/>
+        <viewAttribute id="VIEW_TYPE"/>
+        <viewAttribute id="ACTIVATED_BY"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Agr_Obj">
+        <mapping xsi:type="Calculation:AttributeMapping" target="SCHEMA_NAME" source="SCHEMA_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECT_NAME" source="OBJECT_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECT_TYPE" source="OBJECT_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VIEW_TYPE" source="VIEW_TYPE"/>
+      </input>
+      <input node="#Prj_Au">
+        <mapping xsi:type="Calculation:AttributeMapping" target="ACTIVATED_BY" source="ACTIVATED_BY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SCHEMA_NAME" source="SCHEMA_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECT_NAME" source="OBJECT_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECT_TYPE" source="OBJECT_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VIEW_TYPE" source="VIEW_TYPE"/>
+      </input>
+      <joinAttribute name="SCHEMA_NAME"/>
+      <joinAttribute name="OBJECT_NAME"/>
+      <joinAttribute name="OBJECT_TYPE"/>
+      <joinAttribute name="VIEW_TYPE"/>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Jn_Au">
+    <descriptions/>
+    <attributes>
+      <attribute id="SCHEMA_NAME" order="1" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="SCHEMA_NAME"/>
+        <keyMapping columnObjectName="Jn_Au" columnName="SCHEMA_NAME"/>
+      </attribute>
+      <attribute id="OBJECT_NAME" order="2" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="OBJECT_NAME"/>
+        <keyMapping columnObjectName="Jn_Au" columnName="OBJECT_NAME"/>
+      </attribute>
+      <attribute id="OBJECT_TYPE" order="3" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="OBJECT_TYPE"/>
+        <keyMapping columnObjectName="Jn_Au" columnName="OBJECT_TYPE"/>
+      </attribute>
+      <attribute id="VIEW_TYPE" order="4" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="VIEW_TYPE"/>
+        <keyMapping columnObjectName="Jn_Au" columnName="VIEW_TYPE"/>
+      </attribute>
+      <attribute id="ACTIVATED_BY" order="5" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="ACTIVATED_BY"/>
+        <keyMapping columnObjectName="Jn_Au" columnName="ACTIVATED_BY"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures/>
+    <calculatedMeasures>
+      <measure id="CNT" hidden="false" order="6" aggregationType="sum" engineAggregation="sum" measureType="simple" aggregatable="true" calculatedMeasureType="counter" datatype="INTEGER" expressionLanguage="COLUMN_ENGINE">
+        <descriptions defaultDescription="CNT"/>
+        <exceptionAggregation exceptionAggregationType="countDistinct">
+          <attribute attributeName="SCHEMA_NAME"/>
+          <attribute attributeName="OBJECT_NAME"/>
+          <attribute attributeName="OBJECT_TYPE"/>
+          <attribute attributeName="VIEW_TYPE"/>
+        </exceptionAggregation>
+        <formula>1</formula>
+      </measure>
+    </calculatedMeasures>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="177" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Prj_All" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="611"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Prj_Base" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="533"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Agr_Base" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="455"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Prj_Dep" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="533"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Agr_Dep" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="455"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Union_All" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="100" y="339"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Prj_Au" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="254" y="261"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Agr_Obj" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="100" y="261"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Jn_Au" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="177" y="165"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="CV_OBJECT_AUTHOR" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="SCRIPT_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" scriptParametersCaseSensitive="true">
+  <descriptions defaultDescription="CV_OBJECT_DEPENDENCIES"/>
+  <localVariables>
+    <variable id="IP_PATH" parameter="true">
+      <descriptions defaultDescription="IP_PATH"/>
+      <variableProperties datatype="NVARCHAR" defaultValue="DFV" length="256" mandatory="true">
+        <valueDomain type="empty"/>
+        <selection multiLine="false" type="SingleValue"/>
+      </variableProperties>
+    </variable>
+  </localVariables>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <dataSources/>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:SqlScriptView" id="Script_View">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute datatype="NVARCHAR" id="PACKAGE_ID" length="256"/>
+        <viewAttribute datatype="NVARCHAR" id="OBJECT_NAME" length="256"/>
+        <viewAttribute datatype="NVARCHAR" id="OBJECT_SUFFIX" length="256"/>
+        <viewAttribute datatype="NVARCHAR" id="ACTIVATED_BY" length="256"/>
+        <viewAttribute datatype="INTEGER" id="VERSION_ID"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <localVariable>#IP_PATH</localVariable>
+      <definition>BEGIN
+	DECLARE lv_path_mask STRING;
+	lv_path_mask := :IP_PATH || '%';
+	
+	var_out = SELECT &quot;PACKAGE_ID&quot;, &quot;OBJECT_NAME&quot;, &quot;OBJECT_SUFFIX&quot;, &quot;ACTIVATED_BY&quot;, &quot;VERSION_ID&quot; 
+	FROM &quot;_SYS_REPO&quot;.&quot;ACTIVE_OBJECT&quot;
+	WHERE &quot;PACKAGE_ID&quot; LIKE lv_path_mask AND OBJECT_SUFFIX LIKE '%view'; 
+
+END</definition>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Script_View">
+    <descriptions/>
+    <attributes>
+      <attribute id="PACKAGE_ID" order="1">
+        <descriptions defaultDescription="BASE_SCHEMA_NAME"/>
+        <keyMapping columnObjectName="Script_View" columnName="PACKAGE_ID"/>
+      </attribute>
+      <attribute id="OBJECT_NAME" order="2">
+        <descriptions defaultDescription="BASE_OBJECT_NAME"/>
+        <keyMapping columnObjectName="Script_View" columnName="OBJECT_NAME"/>
+      </attribute>
+      <attribute id="OBJECT_SUFFIX" order="3">
+        <descriptions defaultDescription="BASE_OBJECT_TYPE"/>
+        <keyMapping columnObjectName="Script_View" columnName="OBJECT_SUFFIX"/>
+      </attribute>
+      <attribute id="ACTIVATED_BY" order="4">
+        <descriptions defaultDescription="BASE_VIEW_TYPE"/>
+        <keyMapping columnObjectName="Script_View" columnName="ACTIVATED_BY"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="VERSION_ID" order="5" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="DEPENDENT_SCHEMA_NAME"/>
+        <measureMapping columnObjectName="Script_View" columnName="VERSION_ID"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="40" y="85"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>
