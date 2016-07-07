@@ -1,7 +1,7 @@
 $.response.contentType = "text/html";
 
 var path =$.request.parameters.get('path');
-var query = "SELECT \"BASE_SCHEMA_NAME\", \"BASE_OBJECT_NAME\", \"BASE_OBJECT_TYPE\", \"BASE_VIEW_TYPE\", \"DEPENDENT_SCHEMA_NAME\", \"DEPENDENT_OBJECT_NAME\", \"DEPENDENT_OBJECT_TYPE\", \"DEPENDENT_VIEW_TYPE\" FROM \"_SYS_BIC\".\"DATA_FLOW_VISUALIZATION.MODEL/CV_OBJECT_DEPENDENCIES\" (\'PLACEHOLDER\' = (\'$$IP_PATH$$\','" + path + "'))";
+var query = "SELECT \"BASE_SCHEMA_NAME\", \"BASE_OBJECT_NAME\", \"BASE_OBJECT_TYPE\", \"BASE_VIEW_TYPE\", \"DEPENDENT_SCHEMA_NAME\", \"DEPENDENT_OBJECT_NAME\", \"DEPENDENT_OBJECT_TYPE\", \"DEPENDENT_VIEW_TYPE\" FROM \"_SYS_BIC\".\"DFV.MODEL/CV_OBJECT_DEPENDENCIES\" (\'PLACEHOLDER\' = (\'$$IP_PATH$$\','" + path + "'))";
 
 var conn = $.db.getConnection();  
 var pstmt = conn.prepareStatement(query);  
